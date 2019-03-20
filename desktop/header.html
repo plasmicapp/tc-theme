@@ -1,0 +1,462 @@
+<script type="text/x-handlebars" data-template-name="discovery">
+{{mount-widget widget="theme-creator-intro"}}
+<div class="container">
+ {{discourse-banner user=currentUser banner=site.banner}}
+</div>
+<div class="list-controls">
+ <div class="container">
+  {{outlet "navigation-bar"}}
+ </div>
+</div>
+{{conditional-loading-spinner condition=loading}}
+<div class="container list-container {{if loading "hidden"}}">
+ <div class="row">
+  <div class="full-width">
+   <div id="header-list-area">
+    {{outlet "header-list-container"}}
+   </div>
+  </div>
+ </div>
+ <div class="row">
+  <div class="full-width">
+   <div id="list-area">
+    {{plugin-outlet name="discovery-list-container-top"
+                        args=(hash category=category listLoading=loading)}}
+    {{outlet "list-container"}}
+   </div>
+  </div>
+ </div>
+</div>
+{{plugin-outlet name="discovery-below"}}
+</script>
+
+<script type="text/discourse-plugin" version="0.8">
+const h = require("virtual-dom").h;
+const headerHeight = require("discourse/components/site-header").headerHeight;
+const { iconNode } = require("discourse-common/lib/icon-library");
+
+let strings = [];
+
+strings["tc_intro"] = {
+  top_section: {
+    //
+  },
+  mid_section: {
+    section_1: {
+      heading: "What is Theme Creator?",
+      blurb:
+        "Theme Creator is a tool that allows you to create, edit, preview and share themes and theme components without installing Discourse!",
+      image:
+        "http://localhost:3000/uploads/default/original/1X/f3c526c98353abfa42515efbbf57425860b7d60f.svg",
+      cta_text: "Learn more about Theme Creator",
+      cta_link:
+        "https://meta.discourse.org/t/theme-creator-create-and-show-themes-without-installing-discourse/84942",
+      color: "#00AEEF"
+    },
+    section_2: {
+      heading: "How do I create themes?",
+      blurb:
+        "Creating new themes for Discourse is simple. Once you're familiar with the structure of theme files and folders, you'll practically be able to do it with your eyes closed!",
+      image:
+        "http://localhost:3000/uploads/default/original/1X/cfaed994e4f2df74af7f9b50651af443dc955ffb.svg",
+      cta_text: "Learn how to create Discourse themes",
+      cta_link:
+        "https://meta.discourse.org/t/structure-of-themes-and-theme-components/60848",
+      color: "#00A94F"
+    },
+    section_3: {
+      heading: "Discourse Theme CLI",
+      blurb:
+        "To make things even simpler, we've created the Theme CLI - a command line tool that generates all the necessery files and folders for a new theme with a few keystrokes. Once you try it, you'll never go back!",
+      image:
+        "http://localhost:3000/uploads/default/original/1X/01f047b36e0954e63796f724e4f21fd98b10b819.svg",
+      cta_text: "Learn how to install and use the Theme CLI",
+      cta_link:
+        "https://meta.discourse.org/t/discourse-theme-cli-console-app-to-help-you-build-themes/82950",
+      color: "#FFF9AE"
+    },
+    section_4: {
+      heading: "Discourse style guide",
+      blurb:
+        "The style guide is a great starting point to see how the changes in your theme affect the Discourse interface. It enables you to quickly check numerous UI elements all on one page.",
+      image:
+        "http://localhost:3000/uploads/default/original/1X/eaa3991d672ffa35c1afb298059a9e78671d3ca3.svg",
+      cta_text: "Learn more about the style guide",
+      cta_link:
+        "https://meta.discourse.org/t/the-official-discourse-styleguide-plugin/67405",
+      color: "#F15D22"
+    },
+    section_5: {
+      heading: "Advanced Discourse Themes",
+      blurb:
+        "Want to create themes that go beyond simple CSS and color modifications? You can! With a bit of patience and a bit of reading, you'll be able to create themes and components that add entirely new features or modify existing features to make them work exactly the way you want. ",
+      image:
+        "http://localhost:3000/uploads/default/original/1X/461f3ac6be4b1b15934e8fa020f8bff41464eabd.svg",
+      cta_text: "Learn how to create advanced themes",
+      cta_link:
+        "https://meta.discourse.org/t/developer-s-guide-to-discourse-themes/93648",
+      color: "#D0232B"
+    },
+    section_6: {
+      heading: "Got a question?",
+      blurb:
+        "If you're ever stuck on anything while developing a theme, we're here to help. Let us know what issues you're facing and we'll try our best to help. The more details you include in your question the more likely we'll be able to help.",
+      image:
+        "http://localhost:3000/uploads/default/original/1X/4fe1c70cd8c0e0573bc5b345d3abeee5169e5d24.svg",
+      cta_text: "Ask a Question",
+      cta_link: "https://meta.discourse.org/new-topic?&category=dev",
+      color: "#000000"
+    }
+  },
+  bottom_section: {
+    section_1: {
+      image:
+        "http://localhost:3000/uploads/default/original/1X/671139fc017b59ba0f8198346dfe1bd6119e3201.svg"
+    },
+    section_2: {
+      heading: "What are you waiting for?",
+      blurb:
+        "You have access to all the tools and information you need to create awesome themes. There's a world of possibilities and we can't wait to see what you come up with!",
+      cta_link: "/my/themes",
+      cta_text: "New Theme",
+      cta_icon: "plus",
+      cta_link_anon: "/login",
+      cta_text_anon: "Log in",
+      cta_icon_anon: "user"
+    }
+  }
+};
+
+api.createWidget("theme-creator-intro", {
+  tagName: "div.theme-creator-intro",
+
+  _getHeaderHeight() {
+    return headerHeight();
+  },
+
+  _getBodyWidth() {
+    return $("body").width();
+  },
+
+  _isLoggedIn() {
+    return api.getCurrentUser();
+  },
+
+  html() {
+    return h("div.tc-intro", [
+      h(
+        "div.tc-top-section",
+        {
+          style: `--width: ${this._getBodyWidth()}px`
+        },
+        [
+          h("div.tc-waves", [
+            h("div.svg.svg_1"),
+            h("div.svg.svg_2"),
+            h("div.svg.svg_3"),
+            h("div.svg.svg_4")
+          ])
+        ]
+      ),
+
+      h("div.tc-mid-section", [
+        h("div.tc-mid-content.tc-content", [
+          h("div.tc-mid-section.tc-mid-section-1", [
+            h("div.tc-mid-box-left", [
+              h(
+                "div.tc-text",
+                {
+                  style: `--color: ${
+                    strings.tc_intro.mid_section.section_1.color
+                  }`
+                },
+                [
+                  h(
+                    "h1.tc-section-heading",
+                    strings.tc_intro.mid_section.section_1.heading
+                  ),
+                  h(
+                    "div.tc-section-blurb",
+                    `${strings.tc_intro.mid_section.section_1.blurb}`
+                  ),
+                  h("button.btn.btn-primary", [
+                    h(
+                      "a.tc-cta",
+                      {
+                        href: strings.tc_intro.mid_section.section_1.cta_link,
+                        target: "_blank"
+                      },
+                      strings.tc_intro.mid_section.section_1.cta_text
+                    )
+                  ])
+                ]
+              )
+            ]),
+            h("div.tc-mid-box-right", [
+              h(
+                "div.tc-image",
+                h("img", {
+                  src: strings.tc_intro.mid_section.section_1.image
+                })
+              )
+            ])
+          ]),
+          h("div.tc-mid-section.tc-mid-section-2", [
+            h("div.tc-mid-box-left", [
+              h(
+                "div.tc-image",
+                h("img", {
+                  src: strings.tc_intro.mid_section.section_2.image
+                })
+              )
+            ]),
+            h("div.tc-mid-box-right", [
+              h(
+                "div.tc-text",
+                {
+                  style: `--color: ${
+                    strings.tc_intro.mid_section.section_2.color
+                  }`
+                },
+                [
+                  h(
+                    "h1.tc-section-heading",
+                    strings.tc_intro.mid_section.section_2.heading
+                  ),
+                  h(
+                    "div.tc-section-blurb",
+                    strings.tc_intro.mid_section.section_2.blurb
+                  ),
+                  h("button.btn.btn-primary", [
+                    h(
+                      "a.tc-cta",
+                      {
+                        href: strings.tc_intro.mid_section.section_2.cta_link,
+                        target: "_blank"
+                      },
+                      strings.tc_intro.mid_section.section_2.cta_text
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]),
+          h("div.tc-mid-section.tc-mid-section-3", [
+            h("div.tc-mid-box-left", [
+              h(
+                "div.tc-text",
+                {
+                  style: `--color: ${
+                    strings.tc_intro.mid_section.section_3.color
+                  }`
+                },
+                [
+                  h(
+                    "h1.tc-section-heading",
+                    strings.tc_intro.mid_section.section_3.heading
+                  ),
+                  h(
+                    "div.tc-section-blurb",
+                    strings.tc_intro.mid_section.section_3.blurb
+                  ),
+                  h("button.btn.btn-primary", [
+                    h(
+                      "a.tc-cta.dark-font",
+                      {
+                        href: strings.tc_intro.mid_section.section_3.cta_link,
+                        target: "_blank"
+                      },
+                      strings.tc_intro.mid_section.section_3.cta_text
+                    )
+                  ])
+                ]
+              )
+            ]),
+            h("div.tc-mid-box-right", [
+              h(
+                "div.tc-image",
+                h("img", {
+                  src: strings.tc_intro.mid_section.section_3.image
+                })
+              )
+            ])
+          ]),
+          h("div.tc-mid-section.tc-mid-section-4", [
+            h("div.tc-mid-box-left", [
+              h(
+                "div.tc-image",
+                h("img", {
+                  src: strings.tc_intro.mid_section.section_4.image
+                })
+              )
+            ]),
+            h("div.tc-mid-box-right", [
+              h(
+                "div.tc-text",
+                {
+                  style: `--color: ${
+                    strings.tc_intro.mid_section.section_4.color
+                  }`
+                },
+                [
+                  h(
+                    "h1.tc-section-heading",
+                    strings.tc_intro.mid_section.section_4.heading
+                  ),
+                  h(
+                    "div.tc-section-blurb",
+                    strings.tc_intro.mid_section.section_4.blurb
+                  ),
+                  h("button.btn.btn-primary", [
+                    h(
+                      "a.tc-cta",
+                      {
+                        href: strings.tc_intro.mid_section.section_4.cta_link,
+                        target: "_blank"
+                      },
+                      strings.tc_intro.mid_section.section_4.cta_text
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]),
+          h("div.tc-mid-section.tc-mid-section-5", [
+            h("div.tc-mid-box-left", [
+              h(
+                "div.tc-text",
+                {
+                  style: `--color: ${
+                    strings.tc_intro.mid_section.section_5.color
+                  }`
+                },
+                [
+                  h(
+                    "h1.tc-section-heading",
+                    strings.tc_intro.mid_section.section_5.heading
+                  ),
+                  h(
+                    "div.tc-section-blurb",
+                    strings.tc_intro.mid_section.section_5.blurb
+                  ),
+                  h("button.btn.btn-primary", [
+                    h(
+                      "a.tc-cta",
+                      {
+                        href: strings.tc_intro.mid_section.section_5.cta_link,
+                        target: "_blank"
+                      },
+                      strings.tc_intro.mid_section.section_5.cta_text
+                    )
+                  ])
+                ]
+              )
+            ]),
+            h("div.tc-mid-box-right", [
+              h(
+                "div.tc-image",
+                h("img", {
+                  src: strings.tc_intro.mid_section.section_5.image
+                })
+              )
+            ])
+          ]),
+          h("div.tc-mid-section.tc-mid-section-6", [
+            h("div.tc-mid-box-left", [
+              h(
+                "div.tc-image",
+                h("img", {
+                  src: strings.tc_intro.mid_section.section_6.image
+                })
+              )
+            ]),
+            h("div.tc-mid-box-right", [
+              h(
+                "div.tc-text",
+                {
+                  style: `--color: ${
+                    strings.tc_intro.mid_section.section_6.color
+                  }`
+                },
+                [
+                  h(
+                    "h1.tc-section-heading",
+                    strings.tc_intro.mid_section.section_6.heading
+                  ),
+                  h(
+                    "div.tc-section-blurb",
+                    strings.tc_intro.mid_section.section_6.blurb
+                  ),
+                  h("button.btn.btn-primary", [
+                    h(
+                      "a.tc-cta",
+                      {
+                        href: strings.tc_intro.mid_section.section_6.cta_link,
+                        target: "_blank"
+                      },
+                      strings.tc_intro.mid_section.section_6.cta_text
+                    )
+                  ])
+                ]
+              )
+            ])
+          ])
+        ])
+      ]),
+      h("div.tc-bottom-section", [
+        h("div.tc-bottom-content.tc-content", [
+          h("div.tc-bottom-section-1", [
+            h("div.tc-text", [
+              h("h1", strings.tc_intro.bottom_section.section_2.heading),
+              h(
+                "div.tc-blurb",
+                strings.tc_intro.bottom_section.section_2.blurb
+              ),
+              h("button.btn.btn-primary", [
+                h(
+                  "a.tc-cta",
+                  {
+                    href: this._isLoggedIn()
+                      ? strings.tc_intro.bottom_section.section_2.cta_link
+                      : strings.tc_intro.bottom_section.section_2.cta_link_anon
+                  },
+                  [
+                    iconNode(
+                      this._isLoggedIn()
+                        ? strings.tc_intro.bottom_section.section_2.cta_icon
+                        : strings.tc_intro.bottom_section.section_2
+                            .cta_icon_anon
+                    ),
+                    this._isLoggedIn()
+                      ? strings.tc_intro.bottom_section.section_2.cta_text
+                      : strings.tc_intro.bottom_section.section_2.cta_text_anon
+                  ]
+                )
+              ])
+            ])
+          ]),
+          h("div.tc-bottom-section-2", [
+            h(
+              "div.tc-image",
+              h("img", {
+                src: strings.tc_intro.bottom_section.section_1.image
+              })
+            )
+          ])
+        ])
+      ])
+    ]);
+  }
+});
+
+if (api.getCurrentUser()) {
+  api.decorateWidget("header-buttons:before", helper => {
+    return h("button.btn.btn-primary.header-theme-btn", [
+      h("a", { href: strings.tc_intro.bottom_section.section_2.cta_link }, [
+        iconNode(strings.tc_intro.bottom_section.section_2.cta_icon),
+        h("span", strings.tc_intro.bottom_section.section_2.cta_text)
+      ])
+    ]);
+  });
+}
+</script>
