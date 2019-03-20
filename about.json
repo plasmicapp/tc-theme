@@ -1,0 +1,21 @@
+{
+  "name": "TC",
+  "component": false,
+  "license_url": "https://github.com/discourse/tc-theme/blob/master/LICENSE",
+  "about_url": "https://theme-creator.discourse.org",
+  "authors": "Discourse",
+  "theme_version": "0.2",
+  "minimum_discourse_version": null, 
+  "maximum_discourse_version": null,
+  "assets": {
+    "font": "assets/font.woff",
+    "waveSvg": "assets/wave.svg",
+    "introSvg1": "assets/introSvg1.svg,
+    "introSvg2": "assets/introSvg2.svg,
+    "introSvg3": "assets/introSvg3.svg,
+    "introSvg4": "assets/introSvg4.svg,
+    "introSvg5": "assets/introSvg5.svg,
+    "introSvg6": "assets/introSvg6.svg,
+    "introSvg7": "assets/introSvg7.svg
+  }
+}
