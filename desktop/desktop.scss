@@ -20,6 +20,12 @@ html {
   }
 }
 
+.theme-page {
+  .header-theme-btn {
+    display: none;
+  }
+}
+
 .theme-creator-intro {
   animation: fadein 0.75s;
   .tc-intro {

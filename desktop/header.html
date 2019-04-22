@@ -118,8 +118,8 @@ strings["tc_intro"] = {
       blurb:
         "You have access to all the tools and information you need to create awesome themes. There's a world of possibilities and we can't wait to see what you come up with!",
       cta_link: "/my/themes",
-      cta_text: "New Theme",
-      cta_icon: "plus",
+      cta_text: "My Themes",
+      cta_icon: "palette",
       cta_link_anon: "/login",
       cta_text_anon: "Log in",
       cta_icon_anon: "user"
@@ -446,6 +446,15 @@ api.createWidget("theme-creator-intro", {
         ])
       ])
     ]);
+  }
+});
+
+api.onPageChange((url, title) => {
+  const path = window.location.pathname;
+  if (/\/themes/.test(path)){
+    $('html').addClass('theme-page');
+  } else {
+    $('html').removeClass('theme-page');
   }
 });
 
