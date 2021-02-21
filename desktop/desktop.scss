@@ -2,15 +2,13 @@
   display: none;
 }
 
-@font-face {
-  font-family: "Metropolis";
-  src: url(#{$font}) format("woff");
-  font-weight: 200;
-  font-style: normal;
-}
+// @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap");
+// @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap");
 
-html {
-  font-family: Metropolis;
+:root {
+  --font-family: "Roboto";
+  --heading-font-family: "Roboto";
 }
 
 .d-header .header-buttons {
@@ -196,4 +194,49 @@ tbody {
 
 .consent_banner {
   display: none;
+}
+
+$font-1: 10px;
+
+/////////// Plasmic tweaks ////////////////
+
+.topic-list-main-link,
+.topic-list .main-link,
+.latest-topic-list-item .main-link {
+  font-size: 16px;
+}
+.link-bottom-line {
+  margin-top: 6px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+.navigation-controls .btn {
+  padding: 8px 16px;
+}
+
+.list-controls #create-topic,
+.list-controls .categories-admin-dropdown > .btn {
+  background: linear-gradient(0deg, #04a4f4, #4fc4fb);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  &:hover {
+    color: white;
+    background: none 0 0/100% 100% no-repeat padding-box border-box scroll,
+      linear-gradient(#04a4f4, #04a4f4);
+    .d-icon {
+      color: white;
+    }
+  }
+  .d-icon {
+    color: white;
+  }
+}
+
+.list-controls .btn .d-button-label {
+  font-size: 16px;
+  font-weight: bold;
 }
